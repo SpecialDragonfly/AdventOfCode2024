@@ -1,6 +1,9 @@
+package daytwo;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import util.FileReader;
 
 public class Main {
     public static void main(String[] args) {
