@@ -8,17 +8,30 @@ import java.util.stream.Collectors;
 
 public class FileReader {
     /**
-     * @param String file
+     * Returns the input file as a Vector, one line for each element.
+     * @param file
      * @return Vector<String>
      */
     public static Vector<String> readFile(String file) {
         try {
-            Vector<String> lines = Files.lines(Paths.get(file))
+            return Files.lines(Paths.get(file))
                     .collect(Collectors.toCollection(Vector::new));
-            return lines;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new Vector<String>();
+        return new Vector<>();
+    }
+
+    /**
+     * Returns the input file as a singular line
+     * @param file
+     * @return String
+     */
+    public static String getFileAsLine(String file) {
+        Vector<String> lines = FileReader.readFile(file);
+        StringBuilder sb = new StringBuilder();
+        lines.forEach(sb::append);
+
+        return sb.toString();
     }
 }
