@@ -1,7 +1,6 @@
 package dayfour;
 
 import java.util.List;
-import java.util.Vector;
 
 public class MasWordSearch {
     private final List<String> lines;
@@ -30,15 +29,7 @@ public class MasWordSearch {
         // M @ SW, S @ NE
         // and there must be 2.
 
-        int total = 0;
-        if (checkNWSE(row, col)) {
-            total++;
-        }
-        if (checkNESW(row, col)) {
-            total++;
-        }
-
-        return total == 2;
+        return checkNWSE(row, col) && checkNESW(row, col);
     }
 
     private boolean checkNESW(int row, int col) {

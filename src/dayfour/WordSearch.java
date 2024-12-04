@@ -9,10 +9,6 @@ public class WordSearch {
         this.lines = lines;
     }
 
-    public boolean charEquals(int row, int col, char ch) {
-        return this.lines.get(row).charAt(col) == ch;
-    }
-
     public int check(int row, int col) {
         int total = 0;
         if (this.checkUp(row, col)) {
@@ -40,6 +36,10 @@ public class WordSearch {
             total += 1;
         }
         return total;
+    }
+
+    private boolean charEquals(int row, int col, char ch) {
+        return this.lines.get(row).charAt(col) == ch;
     }
 
     private boolean checkUp(int row, int col) {

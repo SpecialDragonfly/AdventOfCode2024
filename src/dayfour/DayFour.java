@@ -2,18 +2,23 @@ package dayfour;
 
 import util.FileReader;
 
-import java.util.Vector;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DayFour {
     public static void main(String[] args) {
-        Vector<String> lines = FileReader.readFile("./src/dayfour/input.txt");
+        partOne(FileReader.readFile("./src/dayfour/input.txt"));
+        partTwo(FileReader.readFile("./src/dayfour/input.txt"));
+    }
+
+    private static void partTwo(List<String> lines) {
         MasWordSearch wordSearch = new MasWordSearch(lines);
         Pattern pattern = Pattern.compile("A");
 
         int total = 0;
-        for (int row = 1; row < lines.size(); row++) {
+        // We skip the first and last row because we're looking for a cross. If it's an edge, there can't be a cross.
+        for (int row = 1; row < lines.size() - 1; row++) {
             Matcher matcher = pattern.matcher(lines.get(row));
             while (matcher.find()) {
                 if (wordSearch.check(row, matcher.start())) {
@@ -21,11 +26,10 @@ public class DayFour {
                 }
             }
         }
-        System.out.println("Total instances: " + total);
+        System.out.println("Total instances: " + total); // 1972
     }
 
-    public static void partOne() {
-        Vector<String> lines = FileReader.readFile("./src/dayfour/input.txt");
+    private static void partOne(List<String> lines) {
         WordSearch wordSearch = new WordSearch(lines);
         Pattern pattern = Pattern.compile("X");
 
@@ -33,13 +37,9 @@ public class DayFour {
         for (int row = 0; row < lines.size(); row++) {
             Matcher matcher = pattern.matcher(lines.get(row));
             while (matcher.find()) {
-                int instances = wordSearch.check(row, matcher.start());
-                if (instances > 0) {
-                    //System.out.println("On row " + row + " found "+instances+" at " + matcher.start());
-                    total += instances;
-                }
+                total += wordSearch.check(row, matcher.start());
             }
         }
-        System.out.println("Total instances: " + total);
+        System.out.println("Total instances: " + total); // 2578
     }
 }
