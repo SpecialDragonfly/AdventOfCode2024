@@ -16,12 +16,6 @@ public class DayFive {
         lines.removeFirst(); // Remove the blank line.
         Rules rules = new Rules(ruleValues);
 
-        partOne(rules, new Vector<>(lines));
-        partTwo(rules, new Vector<>(lines));
-    }
-
-    // Count up just the valid print runs.
-    public static void partOne(Rules rules, Vector<String> lines) {
         Vector<PrintRun> input = new Vector<>();
 
         while (!lines.isEmpty()) {
@@ -29,20 +23,25 @@ public class DayFive {
             input.add(new PrintRun(rules, new ArrayList<>(Arrays.stream(line.split(",")).toList())));
         }
 
+        partOne(input);
+        partTwo(input);
+    }
+
+    // Count the middle number from just the valid print runs.
+    public static void partOne(Vector<PrintRun> input) {
         int total = input.stream().map(pr -> pr.valid() ? pr.middleNumber() : 0).reduce(0, Integer::sum);
         System.out.println("Total: " + total); // 5964
     }
 
-    // Count the invalid print runs
-    public static void partTwo(Rules rules, Vector<String> lines) {
-        Vector<PrintRun> input = new Vector<>();
-
-        while (!lines.isEmpty()) {
-            String line = lines.removeFirst();
-            input.add(new PrintRun(rules, new ArrayList<>(Arrays.stream(line.split(",")).toList())));
-        }
-
-        int total = input.stream().map(pr -> !pr.valid() ? pr.middleNumber() : 0).reduce(0, Integer::sum);
+    // Count the middle number from just the invalid print runs, after fixing them.
+    public static void partTwo(Vector<PrintRun> input) {
+        int total = input.stream().map(pr -> {
+            if (pr.valid()) {
+                return 0;
+            }
+            pr.order();
+            return pr.middleNumber();
+        }).reduce(0, Integer::sum);
         System.out.println("Total: " + total); // 4719
     }
 }

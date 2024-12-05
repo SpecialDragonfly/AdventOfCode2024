@@ -2,6 +2,7 @@ package dayfive;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Vector;
 
 public class PrintRun implements Comparator<String> {
     private final Rules rules;
@@ -16,12 +17,17 @@ public class PrintRun implements Comparator<String> {
         return this.pages.toString();
     }
 
-    public boolean valid() {
-        String old = this.pages.toString();
+    // Sorts the numbers based on the rules.
+    public void order() {
         this.pages.sort(this);
-        String newOrder = this.pages.toString();
+    }
 
-        return old.equals(newOrder);
+    // It's valid if before and after sorting the lists are the same.
+    public boolean valid() {
+        Vector<String> newOrder = (new Vector<>(this.pages));
+        newOrder.sort(this);
+
+        return this.pages.equals(newOrder);
     }
 
     public int middleNumber() {
