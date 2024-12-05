@@ -47,6 +47,10 @@ public class PrintRun implements Comparator<String> {
             return -1;
         }
 
+        if (this.rules.contains(o2, o1)) {
+            return 1;
+        }
+
         return 0;
     }
 }
