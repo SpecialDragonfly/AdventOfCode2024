@@ -1,6 +1,6 @@
 package dayone;
 
-import util.FileReader;
+import util.Util;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ public class DayOne {
     }
 
     public static void partTwo() {
-        Vector<String> lines = FileReader.readFile("./src/dayone/input.txt");
+        Vector<String> lines = Util.readFile("./src/dayone/input.txt");
         List<Integer> first = new Vector<>();
         Map<Integer, Integer> occurrences = new HashMap<>();
         lines.forEach(s -> {
@@ -34,7 +34,7 @@ public class DayOne {
     }
 
     public static void partOne() {
-        Vector<String> lines = FileReader.readFile("./src/dayone/input.txt");
+        Vector<String> lines = Util.readFile("./src/dayone/input.txt");
         int total = 0;
         List<Integer> first = new Vector<>();
         List<Integer> second = new Vector<>();

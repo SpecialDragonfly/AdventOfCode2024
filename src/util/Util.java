@@ -6,7 +6,8 @@ import java.nio.file.Paths;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
-public class FileReader {
+public class Util {
+    public static boolean debug = false;
     /**
      * Returns the input file as a Vector, one line for each element.
      * @param file
@@ -28,10 +29,16 @@ public class FileReader {
      * @return String
      */
     public static String getFileAsLine(String file) {
-        Vector<String> lines = FileReader.readFile(file);
+        Vector<String> lines = Util.readFile(file);
         StringBuilder sb = new StringBuilder();
         lines.forEach(sb::append);
 
         return sb.toString();
+    }
+
+    public static void debug(String message) {
+        if (Util.debug) {
+            System.out.println(message);
+        }
     }
 }

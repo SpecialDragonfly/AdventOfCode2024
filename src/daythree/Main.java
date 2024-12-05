@@ -1,6 +1,6 @@
 package daythree;
 
-import util.FileReader;
+import util.Util;
 
 import java.util.Vector;
 import java.util.regex.MatchResult;
@@ -19,7 +19,7 @@ public class Main {
 
     public static void partTwo() {
         // The input for this one carries over from one line to the next, so we just want one line.
-        String line = FileReader.getFileAsLine("./src/daythree/input.txt");
+        String line = Util.getFileAsLine("./src/daythree/input.txt");
 
         // Replace everything between don't and do with the positive do().
         Matcher matcher = dontToDo.matcher(line);
@@ -43,7 +43,7 @@ public class Main {
     }
 
     public static void partOne() {
-        Vector<String> lines = FileReader.readFile("./src/daythree/input.txt");
+        Vector<String> lines = Util.readFile("./src/daythree/input.txt");
         int reduced = lines.stream().map(line -> {
             Pattern pattern = Pattern.compile("mul\\(\\d+,\\d+\\)", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(line);

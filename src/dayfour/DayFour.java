@@ -1,6 +1,6 @@
 package dayfour;
 
-import util.FileReader;
+import util.Util;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 
 public class DayFour {
     public static void main(String[] args) {
-        partOne(FileReader.readFile("./src/dayfour/input.txt"));
-        partTwo(FileReader.readFile("./src/dayfour/input.txt"));
+        partOne(Util.readFile("./src/dayfour/input.txt"));
+        partTwo(Util.readFile("./src/dayfour/input.txt"));
     }
 
     private static void partTwo(List<String> lines) {

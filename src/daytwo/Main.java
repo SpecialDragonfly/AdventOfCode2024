@@ -3,11 +3,11 @@ package daytwo;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import util.FileReader;
+import util.Util;
 
 public class Main {
     public static void main(String[] args) {
-        Vector<String> lines = FileReader.readFile("./src/input.txt");
+        Vector<String> lines = Util.readFile("./src/input.txt");
         Main.partOne(lines);
         Main.partTwo(lines);
     }
