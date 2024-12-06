@@ -2,6 +2,7 @@ package daysix;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Map {
     private final ArrayList<ArrayList<String>> map;
@@ -40,5 +41,37 @@ public class Map {
 
     public void removeObstacle(int row, int col) {
         this.map.get(row).set(col, ".");
+    }
+
+    public boolean checkRowGoingEast(int row, int col) {
+        List<String> rowData = this.map.get(row);
+        return !rowData.subList(col, rowData.size()).stream()
+            .filter(v -> v.equals("#") || v.equals("@"))
+            .toList()
+            .isEmpty();
+    }
+
+    public boolean checkRowGoingWest(int row, int col) {
+        List<String> rowData = this.map.get(row);
+        return !rowData.subList(0, col + 1).stream()
+                .filter(v -> v.equals("#") || v.equals("@"))
+                .toList()
+                .isEmpty();
+    }
+
+    public boolean checkColGoingSouth(int row, int col) {
+        List<String> colData = this.map.stream().map(rowData -> rowData.get(col)).toList();
+        return !colData.subList(row, map.size()).stream()
+            .filter(v -> v.equals("#") || v.equals("@"))
+            .toList()
+            .isEmpty();
+    }
+
+    public boolean checkColGoingNorth(int row, int col) {
+        List<String> colData = this.map.stream().map(rowData -> rowData.get(col)).toList();
+        return !colData.subList(0, row + 1).stream()
+                .filter(v -> v.equals("#") || v.equals("@"))
+                .toList()
+                .isEmpty();
     }
 }

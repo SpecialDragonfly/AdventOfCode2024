@@ -1,8 +1,6 @@
 package daysix;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Guard {
     int row;
@@ -16,12 +14,17 @@ public class Guard {
         this.direction = direction;
     }
 
-    public Set<String> getMovementHistory() {
-        Set<String> coords = new HashSet<>();
+    public HashMap<String, Vector<String>> getMovementHistory() {
+        HashMap<String, Vector<String>> movements = new HashMap<>();
+
         for (String movement : movementHistory) {
-            coords.add(movement.substring(0, movement.lastIndexOf(":")));
+            String coord = movement.substring(0, movement.lastIndexOf(":"));
+            if (!movements.containsKey(coord)) {
+                movements.put(coord, new Vector<>());
+            }
+            movements.get(coord).add(movement.substring(movement.lastIndexOf(":") + 1));
         }
-        return coords;
+        return movements;
     }
 
     public int numberOfSteps() {
