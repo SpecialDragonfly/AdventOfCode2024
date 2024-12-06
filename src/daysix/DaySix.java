@@ -7,11 +7,6 @@ import java.util.Vector;
 
 public class DaySix {
     public static void main(String[] args) {
-        partOne();
-        partTwo();
-    }
-
-    public static void partTwo() {
         Vector<String> lines = Util.readFile("./src/daysix/input.txt");
         Map map = new Map();
         lines.forEach(map::addRow);
@@ -27,6 +22,7 @@ public class DaySix {
                 System.out.println("Shouldn't have found one...");
             }
         }
+        System.out.println("Part One: " + guard.numberOfSteps());
 
         HashMap<String, Vector<String>> movementHistory = guard.getMovementHistory();
 
@@ -84,24 +80,6 @@ public class DaySix {
             }
             map.removeObstacle(row, col);
         }
-        System.out.println("Total Infinite Loops: " + totalInfiniteLoops + " Skipping: " + skipCount);
-    }
-
-    public static void partOne() {
-        Vector<String> lines = Util.readFile("./src/daysix/input.txt");
-        Map map = new Map();
-        lines.forEach(map::addRow);
-        Integer[] guardPosition = map.getGuard();
-        Guard guard = new Guard(guardPosition[0], guardPosition[1], map.valueAt(guardPosition[0], guardPosition[1]));
-
-        while (true) {
-            try {
-                guard.move(map);
-            } catch (GuardLeft | InfiniteLoop e) {
-                break;
-            }
-        }
-
-        System.out.println("Total: " + guard.numberOfSteps());
+        System.out.println("Part Two: Total Infinite Loops: " + totalInfiniteLoops + " Skipping: " + skipCount);
     }
 }
