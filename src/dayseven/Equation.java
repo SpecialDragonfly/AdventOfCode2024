@@ -14,62 +14,36 @@ public class Equation {
 
     public BigInteger calculate() {
         BigInteger current = values.getFirst();
-        if (this.add(current, 1) > 0) {
-            return this.target;
-        }
-        if (this.mul(current, 1) > 0) {
-            return this.target;
-        }
-        if (this.concat(current, 1) > 0) {
+        if (this.add(current, 1) ||  this.mul(current, 1) || this.concat(current, 1)) {
             return this.target;
         }
         return BigInteger.ZERO;
     }
 
-    private int add(BigInteger current, int index) {
+    private boolean add(BigInteger current, int index) {
         current = current.add(this.values.get(index));
-        // This was the last value. Did we reach our target?
-        if (index == this.values.size() - 1) {
-            if (current.equals(this.target)) {
-                return 1;
-            }
-            return 0;
-        }
-        // It's not the last value, have we exceeded our target though?
-        if (current.longValue() > this.target.longValue()) {
-            return 0;
-        }
-        return add(current, index + 1) + mul(current, index + 1) + concat(current, index + 1);
+        return calculateNextNumber(current, index);
     }
 
-    private int mul(BigInteger current, int index) {
+    private boolean mul(BigInteger current, int index) {
         current = current.multiply(this.values.get(index));
-        // This was the last value. Did we reach our target?
-        if (index == this.values.size() - 1) {
-            if (current.equals(this.target)) {
-                return 1;
-            }
-            return 0;
-        }
-        // It's not the last value, have we exceeded our target though?
-        if (current.longValue() > this.target.longValue()) {
-            return 0;
-        }
-        return add(current, index + 1) + mul(current, index + 1) + concat(current, index + 1);
+        return calculateNextNumber(current, index);
     }
 
-    private int concat(BigInteger current, int index) {
+    private boolean concat(BigInteger current, int index) {
         current = new BigInteger(current.toString() + this.values.get(index).toString());
+        return calculateNextNumber(current, index);
+    }
 
+    private boolean calculateNextNumber(BigInteger current, int index) {
+        // This was the last value. Did we reach our target?
         if (index == this.values.size() - 1) {
-            if (current.equals(this.target)) {
-                return 1;
-            }
-            return 0;
+            return current.equals(this.target);
         }
+        // If we're not at the last value, are we over the target value. If so, we can stop.
         if (current.longValue() > this.target.longValue()) {
-            return 0;
+            return false;
         }
-        return add(current, index + 1) + mul(current, index + 1) + concat(current, index + 1);
+        return add(current, index + 1) || mul(current, index + 1) || concat(current, index + 1);
     }
 }

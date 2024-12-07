@@ -11,8 +11,8 @@ public class DaySeven {
         Vector<String> lines = Util.readFile("./src/dayseven/input.txt");
 
         BigInteger total = BigInteger.ZERO;
-        for (int i = 0; i < lines.size(); i++) {
-            String[] parts = lines.get(i).split(":");
+        for (String line : lines) {
+            String[] parts = line.split(":");
             Equation equation = new Equation(
                 new BigInteger(parts[0]),
                 Arrays.stream(parts[1].trim().split(" ")).map(BigInteger::new).toList()
