@@ -1,13 +1,15 @@
 package dayeight;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Map {
     private final ArrayList<ArrayList<String>> map;
-    private final List<Integer[]> antinodes = new ArrayList<>();
-    private final HashMap<String, Vector<Integer[]>> antennaTypes;
+    private final List<Point> antinodes = new ArrayList<>();
+    private final HashMap<String, Vector<Point>> antennaTypes;
 
     public Map() {
         this.map = new ArrayList<>();
@@ -24,7 +26,7 @@ public class Map {
             if (!this.antennaTypes.containsKey(type)) {
                 this.antennaTypes.put(type, new Vector<>());
             }
-            this.antennaTypes.get(type).add(new Integer[]{this.map.size() - 1, matcher.start()});
+            this.antennaTypes.get(type).add(new Point(this.map.size() - 1, matcher.start()));
         }
     }
 
@@ -32,7 +34,7 @@ public class Map {
         // Go through the antenna types
         for (String type : this.antennaTypes.keySet()) {
             // Get the antenna locations according to type:
-            Vector<Integer[]> locations = this.antennaTypes.get(type);
+            Vector<Point> locations = this.antennaTypes.get(type);
             if (locations.size() == 1) {
                 continue;
             }
@@ -40,33 +42,31 @@ public class Map {
             int mapColSize = this.map.getFirst().size();
             for (int i = 0; i < locations.size(); i++) {
                 for (int j = i + 1; j < locations.size(); j++) {
-                    Integer[] first = locations.get(i);
-                    Integer[] second = locations.get(j);
+                    Point first = locations.get(i);
+                    Point second = locations.get(j);
 
-                    int rowDiff = Math.abs(first[0] - second[0]);
-                    int colDiff = Math.abs(first[1] - second[1]);
+                    int rowDiff = (int) Math.abs(first.getX() - second.getX());
+                    int colDiff = (int) Math.abs(first.getY() - second.getY());
 
-                    // if they're NW - SE of each other then it's:
+                    // if they're NW - SE of each other, then it's:
                     // first[0] - row-diff, first[1] - col-diff
                     // second[0] + row-diff, second[1] + col-diff
-                    if (first[1] <= second[1]) {
-                        if (first[0] - rowDiff >= 0 && first[1] - colDiff >= 0) {
-                            this.antinodes.add(new Integer[]{first[0] - rowDiff, first[1] - colDiff});
+                    if (first.getY() <= second.getY()) {
+                        if (first.getX() - rowDiff >= 0 && first.getY() - colDiff >= 0) {
+                            this.antinodes.add(new Point((int) (first.getX() - rowDiff), (int) (first.getY() - colDiff)));
                         }
-                        if (second[0] + rowDiff < mapRowSize && second[1] + colDiff < mapColSize) {
-                            this.antinodes.add(new Integer[]{second[0] + rowDiff, second[1] + colDiff});
+                        if (second.getX() + rowDiff < mapRowSize && second.getY() + colDiff < mapColSize) {
+                            this.antinodes.add(new Point((int) (second.getX() + rowDiff), (int) (second.getY() + colDiff)));
                         }
-                    }
-
-                    // if they're NE - SW of each other then the first one will be the NE one
-                    // first[0] - row-diff, first[1] + col-diff
-                    // second[0] + row-diff, second[1] - col-diff
-                    if (first[1] > second[1]) {
-                        if (first[0] - rowDiff >= 0 && first[1] + colDiff < mapColSize) {
-                            this.antinodes.add(new Integer[]{first[0] - rowDiff, first[1] + colDiff});
+                    } else {
+                        // if they're NE - SW of each other, then it's
+                        // first[0] - row-diff, first[1] + col-diff
+                        // second[0] + row-diff, second[1] - col-diff
+                        if (first.getX() - rowDiff >= 0 && first.getY() + colDiff < mapColSize) {
+                            this.antinodes.add(new Point((int) (first.getX() - rowDiff), (int) (first.getY() + colDiff)));
                         }
-                        if (second[0] + rowDiff < mapRowSize && second[1] - colDiff >= 0) {
-                            this.antinodes.add(new Integer[]{second[0] + rowDiff, second[1] - colDiff});
+                        if (second.getX() + rowDiff < mapRowSize && second.getY() - colDiff >= 0) {
+                            this.antinodes.add(new Point((int) (second.getX() + rowDiff), (int) (second.getY() - colDiff)));
                         }
                     }
                 }
@@ -78,55 +78,46 @@ public class Map {
         // Go through the antenna types
         for (String type : this.antennaTypes.keySet()) {
             // Get the antenna locations according to type:
-            Vector<Integer[]> locations = this.antennaTypes.get(type);
+            Vector<Point> locations = this.antennaTypes.get(type);
             if (locations.size() == 1) {
                 continue;
             }
             int mapRowSize = this.map.size();
             int mapColSize = this.map.getFirst().size();
             for (int i = 0; i < locations.size(); i++) {
+                Point first = locations.get(i);
                 for (int j = i + 1; j < locations.size(); j++) {
-                    Integer[] first = locations.get(i);
-                    Integer[] second = locations.get(j);
+                    Point second = locations.get(j);
 
-                    int rowDiff = Math.abs(first[0] - second[0]);
-                    int colDiff = Math.abs(first[1] - second[1]);
+                    int rowDiff = (int) Math.abs(first.getX() - second.getX());
+                    int colDiff = (int) Math.abs(first.getY() - second.getY());
 
-                    // if they're NW - SE of each other then it's:
+                    // if they're NW - SE of each other, then it's:
                     // first[0] - row-diff, first[1] - col-diff
                     // second[0] + row-diff, second[1] + col-diff
-                    if (first[1] <= second[1]) {
-                        int tmpFirstRow = first[0];
-                        int tmpFirstCol = first[1];
-                        while (tmpFirstRow - rowDiff >= 0 && tmpFirstCol - colDiff >= 0) {
-                            this.antinodes.add(new Integer[]{tmpFirstRow - rowDiff, tmpFirstCol - colDiff});
-                            tmpFirstRow -= rowDiff;
-                            tmpFirstCol -= colDiff;
+                    int count = 1;
+                    if (first.getY() <= second.getY()) {
+                        while (first.getX() - (rowDiff * count) >= 0 && first.getY() - (colDiff * count) >= 0) {
+                            this.antinodes.add(new Point((int) (first.getX() - (rowDiff * count)), (int) (first.getY() - (colDiff* count))));
+                            count++;
                         }
-                        int tmpSecondRow = second[0];
-                        int tmpSecondCol = second[1];
-                        while (tmpSecondRow + rowDiff < mapRowSize && tmpSecondCol + colDiff < mapColSize) {
-                            this.antinodes.add(new Integer[]{tmpSecondRow + rowDiff, tmpSecondCol + colDiff});
-                            tmpSecondRow += rowDiff;
-                            tmpSecondCol += colDiff;
+                        count = 1;
+                        while (second.getX() + (rowDiff * count) < mapRowSize && second.getY() + (colDiff * count) < mapColSize) {
+                            this.antinodes.add(new Point((int) (second.getX() + (rowDiff * count)), (int) (second.getY() + (colDiff * count))));
+                            count++;
                         }
                     } else {
-                        // if they're NE - SW of each other then the first one will be the NE one
+                        // if they're NE - SW of each other, then it's:
                         // first[0] - row-diff, first[1] + col-diff
                         // second[0] + row-diff, second[1] - col-diff
-                        int tmpFirstRow = first[0];
-                        int tmpFirstCol = first[1];
-                        while (tmpFirstRow - rowDiff >= 0 && tmpFirstCol + colDiff < mapColSize) {
-                            this.antinodes.add(new Integer[]{tmpFirstRow - rowDiff, tmpFirstCol + colDiff});
-                            tmpFirstRow -= rowDiff;
-                            tmpFirstCol += colDiff;
+                        while (first.getX() - (rowDiff*count) >= 0 && first.getY() + (colDiff*count) < mapColSize) {
+                            this.antinodes.add(new Point((int) (first.getX() - (rowDiff*count)), (int) (first.getY() + (colDiff*count))));
+                            count++;
                         }
-                        int tmpSecondRow = second[0];
-                        int tmpSecondCol = second[1];
-                        while (tmpSecondRow + rowDiff < mapRowSize && tmpSecondCol - colDiff >= 0) {
-                            this.antinodes.add(new Integer[]{tmpSecondRow + rowDiff, tmpSecondCol - colDiff});
-                            tmpSecondRow += rowDiff;
-                            tmpSecondCol -= colDiff;
+                        count = 1;
+                        while (second.getX() + (rowDiff*count) < mapRowSize && second.getY() - (colDiff*count) >= 0) {
+                            this.antinodes.add(new Point((int) (second.getX() + (rowDiff*count)), (int) (second.getY() - (colDiff*count))));
+                            count++;
                         }
                     }
                 }
@@ -139,13 +130,13 @@ public class Map {
     }
 
     public void outputAntinodes() {
-        Set<String> distinct = this.getAntinodes();
+        Set<Point> distinct = this.getAntinodes();
         for (int i = 0; i < this.map.size(); i++) {
             for (int j = 0; j < this.map.getFirst().size(); j++) {
                 if (!this.map.get(i).get(j).equals(".")) {
                     System.out.print(this.map.get(i).get(j));
                 } else {
-                    if (distinct.contains(i + " " + j)) {
+                    if (distinct.contains(new Point(i, j))) {
                         System.out.print("#");
                     } else {
                         System.out.print(".");
@@ -156,9 +147,12 @@ public class Map {
         }
     }
 
-    public Set<String> getAntinodes() {
-        Set<String> distinct = new HashSet<>(this.antinodes.size());
-        this.antinodes.forEach(coord -> distinct.add(coord[0] + " " + coord[1]));
+    /**
+     * Dump non-unique list items into a set. Now items are unique. Return unique list.
+     */
+    public Set<Point> getAntinodes() {
+        Set<Point> distinct = new HashSet<>(this.antinodes.size());
+        distinct.addAll(this.antinodes);
         return distinct;
     }
 }
