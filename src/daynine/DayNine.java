@@ -2,10 +2,13 @@ package daynine;
 
 import util.Util;
 
-import java.util.Vector;
-
 public class DayNine {
     public static void main(String[] args) {
+        partOne();
+        //partTwo();
+    }
+
+    public static void partTwo() {
         String line = Util.getFileAsLine("./src/daynine/input.txt");
 
         String[] parts = line.split("");
@@ -28,6 +31,12 @@ public class DayNine {
             }
             file = !file;
         }
+        Util.debug = false;
+        diskmap.alternateShrink();
+
+        System.out.println("Value: " + diskmap.getChecksum()); // Answer: 6389911791746
+        // 8573601415879 too high,
+        // 8137352565462 too high
     }
 
     public static void partOne() {
@@ -57,21 +66,8 @@ public class DayNine {
             }
             file = !file;
         }
+        diskmap.shrink();
 
-        // Now we have the final bit.
-        // Pointer at the start, pointer at the end.
-        // Go through the fileFormat char by char.
-        // If it's a . then swap the value at the end pointer with this one.
-        // use string.replace(char, char)
-        int start = diskmap.getFirstSpacer();
-        int end = diskmap.getEndFileBit();
-        while (start < end) {
-            diskmap.swap(start, end);
-            start = diskmap.getFirstSpacer();
-            end = diskmap.getEndFileBit();
-        }
-        diskmap.output();
-
-        System.out.println("Value: " + diskmap.getValue()); // Value was 6356833654075
+        System.out.println("Value: " + diskmap.getChecksum()); // Value was 6356833654075
     }
 }
