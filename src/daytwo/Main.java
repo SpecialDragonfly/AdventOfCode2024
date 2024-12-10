@@ -7,7 +7,7 @@ import util.Util;
 
 public class Main {
     public static void main(String[] args) {
-        Vector<String> lines = Util.readFile("./src/input.txt");
+        Vector<String> lines = Util.readFile("./src/daytwo/input.txt");
         Main.partOne(lines);
         Main.partTwo(lines);
     }
@@ -99,6 +99,9 @@ public class Main {
         return newList;
     }
 
+    // Tests that all the numbers are ascending
+    // So the first number should always be less than the second
+    // Also the second should never rise more sharply than 3
     public static boolean testAscending(List<Integer> numbers) {
         boolean valid = true;
         for (int i = 0; i < numbers.size() - 1; i++) {
@@ -112,6 +115,9 @@ public class Main {
         return valid;
     }
 
+    // Tests that all the numbers are descending
+    // So the first number should never be smaller than the second
+    // Also the second number should never drop more sharply than 3.
     public static boolean testDescending(List<Integer> numbers) {
         boolean valid = true;
         for (int i = 0; i < numbers.size() - 1; i++) {
