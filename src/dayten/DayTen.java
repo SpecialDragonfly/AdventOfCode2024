@@ -7,16 +7,21 @@ import java.util.Vector;
 
 public class DayTen {
     public static void main(String[] args) {
+        partOne();
+        partTwo();
+    }
+
+    public static void partTwo() {
         Vector<String> lines = Util.readFile("./src/dayten/input.txt");
         Map map = new Map();
         lines.forEach(map::addRow);
 
-        Vector<Point> trailheads = map.getTrailHeads();
+        Vector<IntPoint> trailheads = map.getTrailHeads();
         int total = 0;
-        for (Point trailhead : trailheads) {
+        for (IntPoint trailhead : trailheads) {
             total += map.getRatingForTrailhead(trailhead);
         }
-        System.out.println(total);
+        System.out.println(total); // Answer 1511
     }
 
     public static void partOne() {
@@ -24,11 +29,11 @@ public class DayTen {
         Map map = new Map();
         lines.forEach(map::addRow);
 
-        Vector<Point> trailheads = map.getTrailHeads();
+        Vector<IntPoint> trailheads = map.getTrailHeads();
         int total = 0;
-        for (Point trailhead : trailheads) {
+        for (IntPoint trailhead : trailheads) {
             total += map.getScoreForTrailhead(trailhead);
         }
-        System.out.println(total);
+        System.out.println(total); // Answer 682
     }
 }
