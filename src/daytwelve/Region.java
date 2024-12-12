@@ -1,13 +1,14 @@
 package daytwelve;
 
 import util.IntPoint;
-import util.Util;
 
+import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Region {
-    HashSet<IntPoint> area = new HashSet<>();
+    private final HashSet<IntPoint> area = new HashSet<>();
     public Region() {
     }
 
@@ -17,15 +18,6 @@ public class Region {
 
     public void assignToRegion(IntPoint current) {
         this.area.add(current);
-
-    }
-
-    public String getId(Map map) {
-        Optional<IntPoint> x = this.area.stream().findFirst();
-        if (x.isPresent()) {
-            return map.get(x.get()).getValue();
-        }
-        return "?";
     }
 
     public int getArea() {
@@ -33,32 +25,28 @@ public class Region {
     }
 
     public int getCircumference(Map map) {
-        int fences = 0;
-        for (IntPoint point : this.area) {
-            fences += map.get(point).getFences().size();
-        }
-        return fences;
+        return this.area.stream()
+            .map(p -> map.getPlotAt(p).getFences().size())
+            .reduce(0, Integer::sum);
     }
 
     public int getDiscountedCircumference(Map map) {
-        int minRow = Integer.MAX_VALUE;
-        int maxRow = 0;
-        int minCol = Integer.MAX_VALUE;
-        int maxCol = 0;
-        for (IntPoint point : this.area) {
-            if (point.x() < minRow) {
-                minRow = point.x();
-            }
-            if (point.x() > maxRow) {
-                maxRow = point.x();
-            }
-            if (point.y() < minCol) {
-                minCol = point.y();
-            }
-            if (point.y() > maxCol) {
-                maxCol = point.y();
-            }
-        }
+        List<Integer> extremes = this.area.stream()
+            .collect(Collectors.teeing(
+                Collectors.reducing((p1, p2) -> p1.getX() < p2.getX() ? p1 : p2), // Smallest x
+                Collectors.reducing((p1, p2) -> p1.getY() < p2.getY() ? p1 : p2), // Smallest y
+                (minXPoint, minYPoint) -> List.of(
+                    minXPoint.orElseThrow().getX(),
+                    minYPoint.orElseThrow().getY(),
+                    this.area.stream().max(Comparator.comparingInt(IntPoint::getX)).orElseThrow().getX(),
+                    this.area.stream().max(Comparator.comparingInt(IntPoint::getY)).orElseThrow().getY()
+                )
+            ));
+        int minRow = extremes.get(0);
+        int minCol = extremes.get(1);
+        int maxRow = extremes.get(2);
+        int maxCol = extremes.get(3);
+
         // The region is entirely within this area
         // Check N fences
         int northSides = countNorthSides(map, minRow, maxRow, minCol, maxCol);
@@ -72,7 +60,6 @@ public class Region {
         // Check W fences
         int westSides = countWestSides(map, minRow, maxRow, minCol, maxCol);
 
-        Util.debug("Region: " + this.getId(map) + " -  N: " + northSides + " S: " + southSides + " E: " + eastSides + " W: " + westSides);
         return northSides + southSides + eastSides + westSides;
     }
 
@@ -81,14 +68,14 @@ public class Region {
         for (int row = minRow; row <= maxRow; row++) {
             // Find the first value on this row with a north facing fence
             int col = minCol;
-            while (col <= maxCol && (!this.contains(new IntPoint(row, col)) || !map.get(new IntPoint(row, col)).getFences().contains("N"))) {
+            while (col <= maxCol && (!this.contains(new IntPoint(row, col)) || !map.getPlotAt(row, col).hasFence("N"))) {
                 col++;
             }
             // This is the first point to have a North side on this row.
             int side = 0;
             boolean isBreak = false;
             while (col <= maxCol) {
-                if (this.contains(new IntPoint(row, col)) && map.get(new IntPoint(row, col)).getFences().contains("N")) {
+                if (this.contains(new IntPoint(row, col)) && map.getPlotAt(row, col).hasFence("N")) {
                     if (isBreak || side == 0) {
                         // We had a break, so this is a new side.
                         side++;
@@ -110,14 +97,14 @@ public class Region {
         for (int row = minRow; row <= maxRow; row++) {
             // Find the first value on this row with a south facing fence
             int col = minCol;
-            while (col <= maxCol && (!this.contains(new IntPoint(row, col)) || !map.get(new IntPoint(row, col)).getFences().contains("S"))) {
+            while (col <= maxCol && (!this.contains(new IntPoint(row, col)) || !map.getPlotAt(row, col).hasFence("S"))) {
                 col++;
             }
             // This is the first point to have a South side on this row.
             int side = 0;
             boolean isBreak = false;
             while (col <= maxCol) {
-                if (this.contains(new IntPoint(row, col)) && map.get(new IntPoint(row, col)).getFences().contains("S")) {
+                if (this.contains(new IntPoint(row, col)) && map.getPlotAt(row, col).hasFence("S")) {
                     if (isBreak || side == 0) {
                         // We had a break, so this is a new side.
                         side++;
@@ -138,14 +125,14 @@ public class Region {
         int eastSides = 0;
         for (int col = minCol; col <= maxCol; col++) {
             int row = minRow;
-            while (row <= maxRow && (!this.contains(new IntPoint(row, col)) || !map.get(new IntPoint(row, col)).getFences().contains("E"))) {
+            while (row <= maxRow && (!this.contains(new IntPoint(row, col)) || !map.getPlotAt(row, col).hasFence("E"))) {
                 row++;
             }
             // This is the first point to have an East side on the row
             int side = 0;
             boolean isBreak = false;
             while (row <= maxRow) {
-                if (this.contains(new IntPoint(row, col)) && map.get(new IntPoint(row, col)).getFences().contains("E")) {
+                if (this.contains(new IntPoint(row, col)) && map.getPlotAt(row, col).hasFence("E")) {
                     if (isBreak || side == 0) {
                         side++;
                         isBreak = false;
@@ -164,14 +151,14 @@ public class Region {
         int westSides = 0;
         for (int col = minCol; col <= maxCol; col++) {
             int row = minRow;
-            while (row <= maxRow && (!this.contains(new IntPoint(row, col)) || !map.get(new IntPoint(row, col)).getFences().contains("W"))) {
+            while (row <= maxRow && (!this.contains(new IntPoint(row, col)) || !map.getPlotAt(row, col).hasFence("W"))) {
                 row++;
             }
-            // This is the first point to have an East side on the row
+            // This is the first point to have a West side on the row
             int side = 0;
             boolean isBreak = false;
             while (row <= maxRow) {
-                if (this.contains(new IntPoint(row, col)) && map.get(new IntPoint(row, col)).getFences().contains("W")) {
+                if (this.contains(new IntPoint(row, col)) && map.getPlotAt(row, col).hasFence("W")) {
                     if (isBreak || side == 0) {
                         side++;
                         isBreak = false;

@@ -22,6 +22,10 @@ public class GardenPlot {
         return !this.fences.isEmpty();
     }
 
+    public boolean hasFence(String fence) {
+        return this.fences.contains(fence);
+    }
+
     public ArrayList<String> getFences() {
         return this.fences;
     }

@@ -6,7 +6,6 @@ import java.util.Vector;
 
 public class DayTwelve {
     public static void main(String[] args) {
-        Util.debug = false;
         Vector<String> lines = Util.readFile("./src/daytwelve/input.txt");
         Map map = new Map();
         lines.forEach(map::addRow);
@@ -15,12 +14,13 @@ public class DayTwelve {
         // if it's not, place a fence.
         map.assignFences();
 
-        map.createRegions();
+        Regions regions = new Regions(map);
+        regions.identifyRegions();
 
-        int total = map.calculateFenceCost();
-        System.out.println("Total: " + total);
+        int total = regions.calculateFenceCost();
+        System.out.println("Part 1: " + total);
 
-        int discountedTotal = map.calculateDiscountedFenceCost();
-        System.out.println("Total: " + discountedTotal);
+        int discountedTotal = regions.calculateDiscountedFenceCost();
+        System.out.println("Part 2: " + discountedTotal);
     }
 }
